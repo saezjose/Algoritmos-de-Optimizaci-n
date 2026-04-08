@@ -1,2 +1,2 @@
-# Algoritmos-de-Optimizaci-n
+# Algoritmos-de-Optimizacion
 ola ratón con cola 
