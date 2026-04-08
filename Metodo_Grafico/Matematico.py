@@ -12,6 +12,11 @@ Constraint = Tuple[Fraction, Fraction, Fraction]
 Point = Tuple[Fraction, Fraction]
 
 
+def determinant_2x2(a: Fraction, b: Fraction, c: Fraction, d: Fraction) -> Fraction:
+    """Calcula el determinante de una matriz 2x2."""
+    return a * d - b * c
+
+
 def to_fraction(value: float | int | str | Fraction) -> Fraction:
     """Convierte un valor numérico a Fraction para mantener precisión racional."""
     if isinstance(value, Fraction):
@@ -31,16 +36,19 @@ def normalize_constraints(matrix: Sequence[Sequence[float | int | str]]) -> List
 
 
 def line_intersection(c1: Constraint, c2: Constraint) -> Point | None:
-    """Calcula la intersección exacta entre dos líneas A*x + B*y = C."""
+    """Calcula intersección exacta de dos rectas con regla de Cramer."""
     a1, b1, c1v = c1
     a2, b2, c2v = c2
 
-    det = a1 * b2 - a2 * b1
-    if det == 0:
+    d = determinant_2x2(a1, b1, a2, b2)
+    if d == 0:
         return None
 
-    x = (c1v * b2 - c2v * b1) / det
-    y = (a1 * c2v - a2 * c1v) / det
+    dx = determinant_2x2(c1v, b1, c2v, b2)
+    dy = determinant_2x2(a1, c1v, a2, c2v)
+
+    x = dx / d
+    y = dy / d
     return (x, y)
 
 
