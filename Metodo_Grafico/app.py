@@ -6,7 +6,7 @@ from tkinter import messagebox
 
 import customtkinter as ctk
 
-from Metodo_Grafico.Matematico import (
+from Matematico import (
     format_vertices,
     solve_feasible_region,
 )

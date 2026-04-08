@@ -8,7 +8,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 
-from Metodo_Grafico.Matematico import Point, compute_candidate_points, normalize_constraints, order_vertices
+from Matematico import Point, compute_candidate_points, normalize_constraints, order_vertices
 
 
 @dataclass(frozen=True)
