@@ -76,12 +76,13 @@ def plot_feasible_region(
     save_path = output_path or cfg.feasible_output_name
     constraints = normalize_constraints(matrix)
 
-    all_points = compute_candidate_points(constraints)
-    all_points.extend(vertices)
+    plot_points: list[Point] = list(vertices)
     if optimal_point is not None:
-        all_points.append(optimal_point)
+        plot_points.append(optimal_point)
+    if not plot_points:
+        plot_points = compute_candidate_points(constraints)
 
-    x_min, x_max, y_min, y_max = _compute_axis_limits(all_points, cfg)
+    x_min, x_max, y_min, y_max = _compute_axis_limits(plot_points, cfg)
 
     fig, ax = plt.subplots(figsize=cfg.feasible_figsize)
 
