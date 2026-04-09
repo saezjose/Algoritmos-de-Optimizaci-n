@@ -69,6 +69,7 @@ def plot_feasible_region(
     constraint_labels: Sequence[str] | None = None,
     output_path: str | None = None,
     config: PlotConfig | None = None,
+    optimal_point: Point | None = None,
 ) -> None:
     """Grafica restricciones, vertices y region factible sombreada."""
     cfg = config or PlotConfig()
@@ -77,6 +78,8 @@ def plot_feasible_region(
 
     all_points = compute_candidate_points(constraints)
     all_points.extend(vertices)
+    if optimal_point is not None:
+        all_points.append(optimal_point)
 
     x_min, x_max, y_min, y_max = _compute_axis_limits(all_points, cfg)
 
@@ -118,6 +121,53 @@ def plot_feasible_region(
         vx = [float(x) for x, _ in vertices]
         vy = [float(y) for _, y in vertices]
         ax.scatter(vx, vy, color=cfg.feasible_vertex_color, s=cfg.feasible_vertex_size, zorder=5, label="Vertices validos")
+        for x, y in vertices:
+            ax.annotate(
+                f"({float(x):g}, {float(y):g})",
+                xy=(float(x), float(y)),
+                xytext=(float(x) + (x_max - x_min) * 0.02, float(y) + (y_max - y_min) * 0.02),
+                textcoords="data",
+                fontsize=9,
+                color="black",
+                bbox={"facecolor": "white", "alpha": 0.7, "edgecolor": "none", "pad": 1},
+            )
+
+    if optimal_point is not None:
+        opt_x, opt_y = float(optimal_point[0]), float(optimal_point[1])
+        ax.scatter(
+            [opt_x],
+            [opt_y],
+            color="green",
+            edgecolors="black",
+            s=120,
+            zorder=8,
+            label="Punto óptimo",
+        )
+        label_dx = (x_max - x_min) * 0.06
+        label_dy = (y_max - y_min) * 0.06
+        if opt_x > (x_min + x_max) / 2:
+            label_dx = -label_dx
+            ha = "right"
+        else:
+            ha = "left"
+        if opt_y > (y_min + y_max) / 2:
+            label_dy = -label_dy
+            va = "top"
+        else:
+            va = "bottom"
+
+        ax.annotate(
+            "Óptimo",
+            xy=(opt_x, opt_y),
+            xytext=(opt_x + label_dx, opt_y + label_dy),
+            textcoords="data",
+            ha=ha,
+            va=va,
+            arrowprops={"arrowstyle": "->", "color": "green"},
+            color="green",
+            fontsize=10,
+            bbox={"facecolor": "white", "alpha": 0.8, "edgecolor": "none", "pad": 2},
+        )
 
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)

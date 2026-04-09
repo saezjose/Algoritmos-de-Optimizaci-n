@@ -226,14 +226,9 @@ class LPApp(ctk.CTk):
             constraint_labels.append(f"y >= {y_lower:g}")
 
             vertices = solve_feasible_region(matrix_with_bounds, enforce_nonnegativity=False)
-            plot_feasible_region(
-                matrix_with_bounds,
-                vertices,
-                constraint_labels=constraint_labels,
-                output_path=str(self.output_image),
-            )
 
             self.vertices_box.delete("1.0", "end")
+            best_point = None
             if vertices:
                 pretty = format_vertices(vertices)
                 lines = [f"({x}, {y})" for x, y in pretty]
@@ -256,6 +251,14 @@ class LPApp(ctk.CTk):
             else:
                 self.vertices_box.insert("1.0", "No se encontraron vertices factibles.")
                 self.objective_result_label.configure(text="Objetivo: region factible vacia")
+
+            plot_feasible_region(
+                matrix_with_bounds,
+                vertices,
+                constraint_labels=constraint_labels,
+                output_path=str(self.output_image),
+                optimal_point=best_point,
+            )
 
             self.status_label.configure(
                 text=(
