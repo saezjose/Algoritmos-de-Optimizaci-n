@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+
+.venv/
+
+# Imagen generada
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.bmp
+*.tif
+*.tiff
+*.ico
