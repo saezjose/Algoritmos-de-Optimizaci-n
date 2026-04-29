@@ -89,6 +89,11 @@ class SimplexApp(tk.Tk):
             ops = [op.get() for op in self.ops_A]
             maximize = self.opt_type.get() == "Max"
 
+            for i, val in enumerate(b):
+                if val < 0:
+                    messagebox.showerror("Error", "lado derecho negativo, conviertalo a forma estandar mulyiplicando por -1 toda la restriccion (al realizar esto cambie la desigualdad por la contraria)")
+                    return
+
             solver = SimplexSolver(c, A, b, ops, maximize)
             success, msg = solver.solve()
             
