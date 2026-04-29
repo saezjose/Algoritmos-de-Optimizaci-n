@@ -14,7 +14,7 @@ from Grafico import plot_feasible_region
 
 
 def parse_matrix(raw_text: str) -> list[list[float]]:
-    """Convierte texto multilinea en matriz n x 3 (A, B, C)."""
+    """Convierte texto multilinea en una matriz n x 3 con valores numéricos."""
     rows: list[list[float]] = []
     for idx, raw_line in enumerate(raw_text.splitlines(), start=1):
         line = raw_line.strip()
@@ -40,6 +40,8 @@ def parse_matrix(raw_text: str) -> list[list[float]]:
 
 
 class LPApp(ctk.CTk):
+    """Aplicación de escritorio para resolver y graficar programación lineal 2D."""
+
     def __init__(self) -> None:
         super().__init__()
         self.title("Programacion Lineal 2D - CustomTkinter")
@@ -59,6 +61,7 @@ class LPApp(ctk.CTk):
         self._build_output_panel()
 
     def _build_header(self) -> None:
+        """Construye el encabezado de la interfaz."""
         title = ctk.CTkLabel(
             self,
             text="Resolucion de Region Factible (2D)",
@@ -67,6 +70,7 @@ class LPApp(ctk.CTk):
         title.grid(row=0, column=0, columnspan=2, padx=18, pady=(16, 8), sticky="w")
 
     def _build_input_panel(self) -> None:
+        """Construye el panel de entrada de restricciones y función objetivo."""
         frame = ctk.CTkFrame(self)
         frame.grid(row=1, column=0, padx=(18, 9), pady=10, sticky="nsew")
         frame.grid_rowconfigure(3, weight=1)
@@ -165,6 +169,7 @@ class LPApp(ctk.CTk):
         clear_btn.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
     def _build_output_panel(self) -> None:
+        """Construye el panel de salida con vértices, estado y gráfico."""
         frame = ctk.CTkFrame(self)
         frame.grid(row=1, column=1, padx=(9, 18), pady=10, sticky="nsew")
         frame.grid_rowconfigure(1, weight=1)
@@ -186,6 +191,7 @@ class LPApp(ctk.CTk):
         open_btn.grid(row=4, column=0, padx=14, pady=(6, 14), sticky="ew")
 
     def clear_all(self) -> None:
+        """Limpia todos los campos y resultados visibles."""
         self.matrix_box.delete("1.0", "end")
         self.vertices_box.delete("1.0", "end")
         self.x_lower_entry.delete(0, "end")
@@ -198,6 +204,7 @@ class LPApp(ctk.CTk):
 
     @staticmethod
     def _parse_bound(entry_value: str, label: str) -> float:
+        """Convierte un campo de texto a flotante validando su contenido."""
         value = entry_value.strip()
         if not value:
             raise ValueError(f"Debes ingresar un valor para {label}.")
@@ -207,6 +214,7 @@ class LPApp(ctk.CTk):
             raise ValueError(f"El valor de {label} debe ser numerico.") from exc
 
     def solve_and_plot(self) -> None:
+        """Resuelve la región factible, calcula el óptimo y genera la gráfica."""
         raw = self.matrix_box.get("1.0", "end")
         try:
             matrix = parse_matrix(raw)

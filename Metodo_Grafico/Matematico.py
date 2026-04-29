@@ -36,7 +36,7 @@ def normalize_constraints(matrix: Sequence[Sequence[float | int | str]]) -> List
 
 
 def line_intersection(c1: Constraint, c2: Constraint) -> Point | None:
-    """Calcula intersección exacta de dos rectas con regla de Cramer."""
+    """Calcula la intersección exacta de dos rectas con regla de Cramer."""
     a1, b1, c1v = c1
     a2, b2, c2v = c2
 
@@ -53,7 +53,7 @@ def line_intersection(c1: Constraint, c2: Constraint) -> Point | None:
 
 
 def axis_intersections(constraint: Constraint) -> List[Point]:
-    """Intersecciones de una línea con x=0 y y=0."""
+    """Devuelve las intersecciones de una restricción con los ejes x e y."""
     a, b, c = constraint
     points: List[Point] = []
 
@@ -66,7 +66,7 @@ def axis_intersections(constraint: Constraint) -> List[Point]:
 
 
 def compute_candidate_points(constraints: Sequence[Constraint]) -> List[Point]:
-    """Genera candidatos: intersecciones entre líneas + intersecciones con ejes + origen."""
+    """Genera candidatos desde intersecciones entre rectas, ejes y el origen."""
     candidates = {(Fraction(0), Fraction(0))}
 
     for c1, c2 in combinations(constraints, 2):
@@ -82,7 +82,7 @@ def compute_candidate_points(constraints: Sequence[Constraint]) -> List[Point]:
 
 
 def is_feasible(point: Point, constraints: Sequence[Constraint]) -> bool:
-    """Valida si un punto cumple todas las restricciones lineales."""
+    """Verifica si un punto cumple todas las restricciones lineales dadas."""
     x, y = point
     for a, b, c in constraints:
         if a * x + b * y > c:
@@ -96,7 +96,7 @@ def filter_feasible_vertices(
     constraints: Sequence[Constraint],
     enforce_nonnegativity: bool = True,
 ) -> List[Point]:
-    """Filtra candidatos y devuelve vértices factibles únicos."""
+    """Filtra candidatos y devuelve los vértices factibles únicos."""
     feasible: List[Point] = []
     for p in candidates:
         if enforce_nonnegativity and (p[0] < 0 or p[1] < 0):
@@ -107,7 +107,7 @@ def filter_feasible_vertices(
 
 
 def order_vertices(vertices: Sequence[Point]) -> List[Point]:
-    """Ordena vértices para trazar el polígono usando ConvexHull (si aplica)."""
+    """Ordena vértices para trazar el polígono usando ConvexHull si aplica."""
     if len(vertices) <= 2:
         return list(vertices)
 
@@ -121,7 +121,7 @@ def solve_feasible_region(
     matrix: Sequence[Sequence[float | int | str]],
     enforce_nonnegativity: bool = True,
 ) -> List[Point]:
-    """Devuelve la lista de vértices (x, y) que delimitan la región factible."""
+    """Devuelve los vértices que delimitan la región factible."""
     constraints = normalize_constraints(matrix)
     candidates = compute_candidate_points(constraints)
     feasible_vertices = filter_feasible_vertices(
@@ -133,5 +133,5 @@ def solve_feasible_region(
 
 
 def format_vertices(vertices: Sequence[Point]) -> List[Tuple[str, str]]:
-    """Formato amigable para imprimir coordenadas exactas racionales."""
+    """Formatea coordenadas exactas racionales para su impresión."""
     return [(str(x), str(y)) for x, y in vertices]

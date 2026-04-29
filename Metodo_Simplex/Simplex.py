@@ -1,7 +1,6 @@
 import numpy as np
 from fractions import Fraction
 
-# Tolerancia para lidiar con errores de punto flotante
 TOL = 1e-8
 
 def to_frac(val):
@@ -15,6 +14,7 @@ def to_frac(val):
 class SimplexSolver:
     """Motor matemático del método Simplex (1 y 2 fases)."""
     def __init__(self, c, A, b, ops, maximize=True):
+        """Inicializa el problema, la tabla base y el estado de solución."""
         self.c = np.array(c, dtype=float)
         self.A = np.array(A, dtype=float)
         self.b = np.array(b, dtype=float)
@@ -30,6 +30,7 @@ class SimplexSolver:
         self.has_phase1 = False
 
     def _build_initial_tableau(self):
+        """Construye la tabla inicial agregando holguras, excesos y artificiales."""
         num_h = sum(1 for op in self.ops if op == "<=")
         num_e = sum(1 for op in self.ops if op == ">=")
         num_a = sum(1 for op in self.ops if op in [">=", "="])
@@ -72,6 +73,7 @@ class SimplexSolver:
                 a_idx += 1
 
     def _setup_phase1(self):
+        """Prepara la fase 1 minimizando la suma de variables artificiales."""
         for i in range(self.m):
             if self.basis[i].startswith('a'):
                 self.tableau[-1] -= self.tableau[i]
@@ -85,6 +87,7 @@ class SimplexSolver:
         })
 
     def _setup_phase2(self):
+        """Elimina artificiales y restablece la función objetivo original."""
         a_indices = [i for i, name in enumerate(self.var_names) if name.startswith('a')]
         self.tableau = np.delete(self.tableau, a_indices, axis=1)
         self.var_names = [name for name in self.var_names if not name.startswith('a')]
@@ -109,6 +112,7 @@ class SimplexSolver:
         })
 
     def _pivot(self, pivot_row, pivot_col):
+        """Aplica la operación pivote y actualiza la base."""
         pivot_val = self.tableau[pivot_row, pivot_col]
         self.tableau[pivot_row] /= pivot_val
         for i in range(self.m + 1):
@@ -118,6 +122,7 @@ class SimplexSolver:
         self.basis[pivot_row] = self.var_names[pivot_col]
 
     def _run_simplex_loop(self, phase_name):
+        """Ejecuta iteraciones del método Simplex hasta optimalidad o bloqueo."""
         iteration = 1
         while True:
             last_row = self.tableau[self.m, :-1]
@@ -171,6 +176,7 @@ class SimplexSolver:
         return True, ""
 
     def solve(self):
+        """Resuelve el problema lineal y devuelve éxito junto con un mensaje."""
         self._build_initial_tableau()
         
         if self.has_phase1:
@@ -203,6 +209,7 @@ class SimplexSolver:
         return True, "Solución óptima encontrada."
 
     def _extract_solution(self):
+        """Extrae la solución básica y el valor óptimo desde la tabla final."""
         self.solution = np.zeros(self.n)
         for i in range(self.m):
             if self.basis[i].startswith('x'):

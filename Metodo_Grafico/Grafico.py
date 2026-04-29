@@ -13,8 +13,7 @@ from Matematico import Point, compute_candidate_points, normalize_constraints, o
 
 @dataclass(frozen=True)
 class PlotConfig:
-    """Configurable plotting parameters to avoid scattered hardcoded values."""
-
+    """Configuración de estilo y tamaño para la gráfica de la región factible."""
     feasible_figsize: Tuple[float, float] = (10.0, 7.0)
     dpi: int = 150
 
@@ -39,7 +38,7 @@ class PlotConfig:
 
 
 def _compute_axis_limits(points: Sequence[Point], config: PlotConfig) -> Tuple[float, float, float, float]:
-    """Compute axis limits with configurable padding and negative-space ratio."""
+    """Calcula los límites de los ejes con relleno configurable."""
     all_x = [float(x) for x, _ in points]
     all_y = [float(y) for _, y in points]
 
@@ -71,7 +70,7 @@ def plot_feasible_region(
     config: PlotConfig | None = None,
     optimal_point: Point | None = None,
 ) -> None:
-    """Grafica restricciones, vertices y region factible sombreada."""
+    """Grafica restricciones, vértices y la región factible sombreada."""
     cfg = config or PlotConfig()
     save_path = output_path or cfg.feasible_output_name
     constraints = normalize_constraints(matrix)

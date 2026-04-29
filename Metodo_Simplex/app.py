@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-# Importamos la clase y la función de formateo desde tu archivo matemático
 from simplex import SimplexSolver, to_frac
 
 class SimplexApp(tk.Tk):
     """Interfaz Gráfica para el Método Simplex."""
     def __init__(self):
+        """Configura la ventana principal y crea la zona inicial de entrada."""
         super().__init__()
         self.title("Calculadora Simplex - Método 2 Fases")
         self.geometry("990x700")
@@ -16,6 +16,7 @@ class SimplexApp(tk.Tk):
         self._build_setup_frame()
 
     def _build_setup_frame(self):
+        """Construye el panel inicial para definir tamaño y tipo del problema."""
         self.setup_frame = ttk.Frame(self, padding="10")
         self.setup_frame.pack(fill=tk.X)
 
@@ -36,6 +37,7 @@ class SimplexApp(tk.Tk):
         self.grid_frame.pack(fill=tk.BOTH, expand=True)
 
     def _generate_grid(self):
+        """Genera la cuadrícula dinámica para la función objetivo y restricciones."""
         for widget in self.grid_frame.winfo_children():
             widget.destroy()
 
@@ -79,14 +81,14 @@ class SimplexApp(tk.Tk):
         self.text_log.grid(row=m+4, column=0, columnspan=n*3+4)
 
     def _solve(self):
+        """Lee los datos, ejecuta Simplex y muestra el procedimiento paso a paso."""
         try:
             c = [float(e.get()) for e in self.entries_c]
             A = [[float(e.get()) for e in row] for row in self.entries_A]
             b = [float(e.get()) for e in self.entries_b]
             ops = [op.get() for op in self.ops_A]
             maximize = self.opt_type.get() == "Max"
-            
-            # Instanciamos la clase que viene desde simplex.py
+
             solver = SimplexSolver(c, A, b, ops, maximize)
             success, msg = solver.solve()
             
